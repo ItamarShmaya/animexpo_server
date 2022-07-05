@@ -23,9 +23,15 @@ export const createUser = async (req, res) => {
       "personalInfo.birthday": birthday,
     });
     await profileData.save();
-    const favCharsList = new FavCharsList({ profile: profileData._id });
+    const favCharsList = new FavCharsList({
+      owner: createdUser._id,
+      profile: profileData._id,
+    });
     await favCharsList.save();
-    const favPeopleList = new FavPeopleList({ profile: profileData._id });
+    const favPeopleList = new FavPeopleList({
+      owner: createdUser._id,
+      profile: profileData._id,
+    });
     await favPeopleList.save();
     const token = await createdUser.generateAuthToken();
     await createdUser.populate("animeList mangaList");
@@ -102,125 +108,6 @@ export const authenticateUser = async (req, res) => {
     res.send({ auth: true });
   } catch (e) {
     res.status(401).send({ auth: false });
-  }
-};
-
-export const getUserAnimeList = async (req, res) => {
-  const { username } = req.params;
-  try {
-    const user = await User.findOne({ username });
-    if (!user) throw new Error(errorMessage.USER_NOT_FOUND);
-    const animeList = await AnimeList.findOne({ owner: user._id });
-    console.log(animeList);
-    res.send(animeList);
-  } catch (e) {
-    if (e.message === errorMessage.USER_NOT_FOUND) {
-      res.status(404).send(errorCode.USER_NOT_FOUND);
-    }
-  }
-};
-
-export const addToAnimeList = async (req, res) => {
-  try {
-    const animeList = await AnimeList.findOne({ owner: req.user._id });
-    const dupe = animeList.list.find(
-      (anime) => anime.mal_id === req.body.mal_id
-    );
-    if (dupe) throw new Error(errorMessage.ANIME_DUPE);
-    animeList.list.push(req.body);
-    const updatedAnimeList = await animeList.save();
-    res.send(updatedAnimeList);
-  } catch (e) {
-    if (e.message === errorMessage.ANIME_DUPE)
-      return res.status(404).send(errorCode.ANIME_DUPE);
-
-    console.log("error", e);
-    res.send("error", e);
-  }
-};
-
-export const removeFromAnimeList = async (req, res) => {
-  const { mal_id } = req.body;
-  try {
-    const animeList = await AnimeList.findOneAndUpdate(
-      { owner: req.user._id },
-      { $pull: { list: { mal_id } } },
-      { new: true }
-    );
-    res.send(animeList);
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-export const updateAnimeEntry = async (req, res) => {
-  try {
-    const animeList = await AnimeList.findOne({ owner: req.user._id });
-    const animeEntry = animeList.list.id(req.body._id);
-    animeEntry.set(req.body);
-    const updatedList = await animeList.save();
-    res.send(updatedList);
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-export const getUserMangaList = async (req, res) => {
-  const { username } = req.params;
-  try {
-    const user = await User.findOne({ username });
-    if (!user) throw new Error(errorMessage.USER_NOT_FOUND);
-    const mangalist = await MangaList.findOne({ owner: user._id });
-    res.send(mangalist);
-  } catch (e) {
-    if (e.message === errorMessage.USER_NOT_FOUND) {
-      res.status(404).send(errorCode.USER_NOT_FOUND);
-    }
-  }
-};
-
-export const addToMangaList = async (req, res) => {
-  try {
-    const mangalist = await MangaList.findOne({ owner: req.user._id });
-    const dupe = mangalist.list.find(
-      (manga) => manga.mal_id === req.body.mal_id
-    );
-    if (dupe) throw new Error(errorMessage.MANGA_DUPE);
-    mangalist.list.push(req.body);
-    const updatedMangaList = await mangalist.save();
-    res.send(updatedMangaList);
-  } catch (e) {
-    if (e.message === errorMessage.MANGA_DUPE)
-      return res.status(404).send(errorCode.MANGA_DUPE);
-
-    console.log("error", e);
-    res.send("error", e);
-  }
-};
-
-export const removeFromMangaList = async (req, res) => {
-  const { mal_id } = req.body;
-  try {
-    const mangaList = await MangaList.findOneAndUpdate(
-      { owner: req.user._id },
-      { $pull: { list: { mal_id } } },
-      { new: true }
-    );
-    res.send(mangaList);
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-export const updateMangaEntry = async (req, res) => {
-  try {
-    const mangaList = await MangaList.findOne({ owner: req.user._id });
-    const mangaEntry = mangaList.list.id(req.body._id);
-    mangaEntry.set(req.body);
-    const updatedMangaList = await mangaList.save();
-    res.send(updatedMangaList);
-  } catch (e) {
-    console.log(e);
   }
 };
 

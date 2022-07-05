@@ -13,12 +13,6 @@ const personEntrySchema = new mongoose.Schema({
     trim: true,
   },
 
-  title: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-
   image: {
     type: String,
     required: true,
@@ -28,6 +22,13 @@ const personEntrySchema = new mongoose.Schema({
 
 const favPeopleSchema = new mongoose.Schema({
   list: [personEntrySchema],
+
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    unique: true,
+    required: true,
+    ref: "User",
+  },
 
   profile: {
     type: mongoose.Schema.Types.ObjectId,

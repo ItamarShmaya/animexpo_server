@@ -6,6 +6,8 @@ export const errorCode = {
   USER_NOT_FOUND: "UserNotFound",
   ANIME_DUPE: "AnimeAlreadyInList",
   MANGA_DUPE: "MangaAlreadyInList",
+  CHAR_DUPE: "CharacterAlreadyInList",
+  PEOPLE_DUPE: "PersonAlreadyInList",
 };
 
 export const errorMessage = {
@@ -13,4 +15,6 @@ export const errorMessage = {
   INCORRECT_CREDENTIALS: "Username or password is incorrect",
   USER_NOT_FOUND: "User not found",
   MANGA_DUPE: "Manga already in list",
+  CHAR_DUPE: "Character alreayd in list",
+  PEOPLE_DUPE: "Person alreayd in list",
 };

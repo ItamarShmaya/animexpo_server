@@ -13,12 +13,6 @@ const characterEntrySchema = new mongoose.Schema({
     trim: true,
   },
 
-  title: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-
   image: {
     type: String,
     required: true,
@@ -28,6 +22,13 @@ const characterEntrySchema = new mongoose.Schema({
 
 const favCharsSchema = new mongoose.Schema({
   list: [characterEntrySchema],
+
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    unique: true,
+    required: true,
+    ref: "User",
+  },
 
   profile: {
     type: mongoose.Schema.Types.ObjectId,

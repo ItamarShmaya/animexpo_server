@@ -5,17 +5,25 @@ import {
   getUserProfileData,
   loginUser,
   logoutUser,
-  getUserAnimeList,
-  addToAnimeList,
-  removeFromAnimeList,
-  updateAnimeEntry,
+  getUsersBySearch,
+} from "../../controllers/users/users.controller.js";
+import {
   addToMangaList,
   getUserMangaList,
   removeFromMangaList,
   updateMangaEntry,
-  getUsersBySearch,
-} from "../../controllers/users/users.controller.js";
+} from "../../controllers/users/mangaList.controller.js";
+import {
+  getUserAnimeList,
+  addToAnimeList,
+  removeFromAnimeList,
+  updateAnimeEntry,
+} from "../../controllers/users/animeList.controller.js";
 import { authUser } from "../../middlewares/authUser.js";
+import {
+  addToFavCharList,
+  removeFromFavCharList,
+} from "../../controllers/users/favCharList.controllers.js";
 
 export const userRouter = express.Router();
 
@@ -47,6 +55,17 @@ userRouter.patch(
   "/user/:username/updateMangaEntry",
   authUser,
   updateMangaEntry
+);
+
+userRouter.patch(
+  "/user/:username/addToFavCharList",
+  authUser,
+  addToFavCharList
+);
+userRouter.patch(
+  "/user/:username/removeFromFavCharList",
+  authUser,
+  removeFromFavCharList
 );
 
 userRouter.get("/users", getUsersBySearch);

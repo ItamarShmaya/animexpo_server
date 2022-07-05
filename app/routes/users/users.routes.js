@@ -24,6 +24,10 @@ import {
   addToFavCharList,
   removeFromFavCharList,
 } from "../../controllers/users/favCharList.controllers.js";
+import {
+  addToFavPeopleList,
+  removeFromFavPeopleList,
+} from "../../controllers/users/favPeopleList.controllers.js";
 
 export const userRouter = express.Router();
 
@@ -66,6 +70,17 @@ userRouter.patch(
   "/user/:username/removeFromFavCharList",
   authUser,
   removeFromFavCharList
+);
+
+userRouter.patch(
+  "/user/:username/addToFavPeopleList",
+  authUser,
+  addToFavPeopleList
+);
+userRouter.patch(
+  "/user/:username/removeFromFavPeopleList",
+  authUser,
+  removeFromFavPeopleList
 );
 
 userRouter.get("/users", getUsersBySearch);

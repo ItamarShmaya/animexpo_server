@@ -7,6 +7,7 @@ import { User } from "../../../db/models/user.js";
 import { errorCode, errorMessage } from "../../errors/error.js";
 import jwt from "jsonwebtoken";
 import { TOKEN_USER_SECRET } from "../../../config/env_var.js";
+import { Review } from "../../../db/models/reviews.js";
 
 export const createUser = async (req, res) => {
   const { username, password, email, birthday } = req.body;
@@ -114,7 +115,9 @@ export const authenticateUser = async (req, res) => {
 export const getUsersBySearch = async (req, res) => {
   const { username } = req.query;
   try {
-    const users = await User.find({ username: new RegExp(username, "i") });
+    const users = await User.find({
+      username: new RegExp(username, "i"),
+    }).populate("profileData");
     res.send(users);
   } catch (e) {
     console.log(e);

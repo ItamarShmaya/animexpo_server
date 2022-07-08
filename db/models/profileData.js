@@ -19,6 +19,11 @@ const profileDataSchema = new mongoose.Schema({
       immutable: true,
     },
 
+    reviewsCount: {
+      type: Number,
+      default: 0,
+    },
+
     avatar: {
       secure_url: {
         type: String,

@@ -71,4 +71,18 @@ const animeListSchema = new mongoose.Schema({
   },
 });
 
+animeEntrySchema.pre("save", async function (next) {
+  const animeListEntry = this;
+
+  if (animeListEntry.isModified("progress")) {
+    if (animeListEntry.progress === animeListEntry.episodes)
+      animeListEntry.status = "Completed";
+  }
+  if (animeListEntry.isModified("status")) {
+    if (animeListEntry.status === "Completed")
+      animeListEntry.progress = animeListEntry.episodes;
+  }
+  next();
+});
+
 export const AnimeList = mongoose.model("animelists", animeListSchema);

@@ -63,7 +63,7 @@ userSchema.virtual("mangaList", {
 
 userSchema.virtual("reviewsList", {
   ref: "reviews",
-  localField: "username",
+  localField: "_id",
   foreignField: "author",
 });
 

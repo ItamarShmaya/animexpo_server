@@ -70,4 +70,18 @@ const mangaListSchema = new mongoose.Schema({
   },
 });
 
+mangaEntrySchema.pre("save", async function (next) {
+  const mangaListEntry = this;
+
+  if (mangaListEntry.isModified("progress")) {
+    if (mangaListEntry.progress === mangaListEntry.volumes)
+      mangaListEntry.status = "Completed";
+  }
+  if (mangaListEntry.isModified("status")) {
+    if (mangaListEntry.status === "Completed")
+      mangaListEntry.progress = mangaListEntry.volumes;
+  }
+  next();
+});
+
 export const MangaList = mongoose.model("mangalists", mangaListSchema);

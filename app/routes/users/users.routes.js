@@ -34,6 +34,10 @@ import {
 } from "../../controllers/users/profileData.controller.js";
 import { multerUpload } from "../../middlewares/multer.js";
 import { cloudinaryConfig } from "../../../config/cloudinaryConfig.js";
+import {
+  addReview,
+  getEntryReviews,
+} from "../../controllers/users/reviews.controllers.js";
 
 export const userRouter = express.Router();
 
@@ -103,8 +107,11 @@ userRouter.post(
   updateAvatar
 );
 
+userRouter.post("/user/reviews", authUser, addReview);
+
 userRouter.get("/users", getUsersBySearch);
 userRouter.get("/user/:username/animelist", getUserAnimeList);
 userRouter.get("/user/:username/mangalist", getUserMangaList);
+userRouter.get("/reviews/:mal_id", getEntryReviews);
 
 userRouter.get("/profile/:username", getUserProfileData);

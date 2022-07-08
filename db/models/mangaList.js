@@ -5,7 +5,6 @@ const mangaEntrySchema = new mongoose.Schema({
     type: Number,
     required: true,
     trim: true,
-    unique: true,
   },
 
   title: {
@@ -34,7 +33,7 @@ const mangaEntrySchema = new mongoose.Schema({
   status: {
     type: String,
     trim: true,
-    default: "Watching",
+    default: "Reading",
   },
 
   score: {
@@ -47,7 +46,7 @@ const mangaEntrySchema = new mongoose.Schema({
     type: Number,
     reuiqred: true,
     validate(value) {
-      if (value < 1) throw new Error("Episodes number must be greater than 1");
+      if (value < 1) throw new Error("Volumes number must be greater than 1");
     },
   },
 
@@ -55,8 +54,8 @@ const mangaEntrySchema = new mongoose.Schema({
     type: Number,
     default: 1,
     validate(value) {
-      if (value < 1 || value > this.episodes)
-        throw new Error(`Progress must be between 1 and ${this.episodes}`);
+      if (value < 1 || value > this.volumes)
+        throw new Error(`Progress must be between 1 and ${this.volumes}`);
     },
   },
 });

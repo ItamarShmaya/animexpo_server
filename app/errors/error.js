@@ -8,6 +8,7 @@ export const errorCode = {
   MANGA_DUPE: "MangaAlreadyInList",
   CHAR_DUPE: "CharacterAlreadyInList",
   PEOPLE_DUPE: "PersonAlreadyInList",
+  NOT_AN_IMAGE: "NotAnImage",
 };
 
 export const errorMessage = {
@@ -17,4 +18,5 @@ export const errorMessage = {
   MANGA_DUPE: "Manga already in list",
   CHAR_DUPE: "Character alreayd in list",
   PEOPLE_DUPE: "Person alreayd in list",
+  NOT_AN_IMAGE: "Please upload an image",
 };

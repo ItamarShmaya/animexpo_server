@@ -8,7 +8,6 @@ export const getUserAnimeList = async (req, res) => {
     const user = await User.findOne({ username });
     if (!user) throw new Error(errorMessage.USER_NOT_FOUND);
     const animeList = await AnimeList.findOne({ owner: user._id });
-    console.log(animeList);
     res.send(animeList);
   } catch (e) {
     if (e.message === errorMessage.USER_NOT_FOUND) {

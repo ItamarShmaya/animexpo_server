@@ -28,6 +28,12 @@ import {
   addToFavPeopleList,
   removeFromFavPeopleList,
 } from "../../controllers/users/favPeopleList.controllers.js";
+import {
+  updateAvatar,
+  updateProfileData,
+} from "../../controllers/users/profileData.controller.js";
+import { multerUpload } from "../../middlewares/multer.js";
+import { cloudinaryConfig } from "../../../config/cloudinaryConfig.js";
 
 export const userRouter = express.Router();
 
@@ -81,6 +87,20 @@ userRouter.patch(
   "/user/:username/removeFromFavPeopleList",
   authUser,
   removeFromFavPeopleList
+);
+
+userRouter.patch(
+  "/user/:username/updateProfileData",
+  authUser,
+  updateProfileData
+);
+
+userRouter.post(
+  "/user/:username/changeAvatar",
+  authUser,
+  cloudinaryConfig,
+  multerUpload,
+  updateAvatar
 );
 
 userRouter.get("/users", getUsersBySearch);

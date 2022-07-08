@@ -8,5 +8,11 @@ const ENV_FILE_PATH = path.join(CONFIG_DIR_PATH, "../.env");
 
 dotenv.config({ path: ENV_FILE_PATH });
 
-export const { MONGO_ATLAS_USERNAME, MONGO_ATLAS_PASSWORD, TOKEN_USER_SECRET } =
-  process.env;
+export const {
+  MONGO_ATLAS_USERNAME,
+  MONGO_ATLAS_PASSWORD,
+  TOKEN_USER_SECRET,
+  CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET,
+} = process.env;

@@ -5,7 +5,7 @@ import {
 } from "../config/env_var.js";
 
 mongoose.connect(
-  "mongodb://127.0.0.1:27017/AnimeList",
+  "mongodb://127.0.0.1:27017/AnimExpo",
   (error, mongoDBInstance) => {
     if (error) throw new Error("Mongo Connection Error: " + error);
     if (!process.env.NODE_ENV) {

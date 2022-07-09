@@ -39,6 +39,19 @@ const reviewSchema = new mongoose.Schema(
       trim: true,
     },
 
+    episodes: {
+      type: Number,
+      required: true,
+      trim: true,
+    },
+
+    type: {
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true,
+    },
+
     author: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

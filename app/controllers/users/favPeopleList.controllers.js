@@ -7,7 +7,10 @@ export const addToFavPeopleList = async (req, res) => {
     const dupe = peopleList.list.find(
       (person) => person.mal_id === req.body.mal_id
     );
-    if (dupe) throw new Error(errorMessage.PEOPLE_DUPE);
+
+    if (dupe) {
+      return res.send(peopleList);
+    }
     peopleList.list.push(req.body);
     const updatedPeopleList = await peopleList.save();
     res.send(updatedPeopleList);

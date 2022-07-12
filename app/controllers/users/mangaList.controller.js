@@ -22,15 +22,15 @@ export const addToMangaList = async (req, res) => {
     const dupe = mangalist.list.find(
       (manga) => manga.mal_id === req.body.mal_id
     );
-    if (dupe) throw new Error(errorMessage.MANGA_DUPE);
+
+    if (dupe) {
+      return res.send(mangalist);
+    }
+
     mangalist.list.push(req.body);
     const updatedMangaList = await mangalist.save();
     res.send(updatedMangaList);
   } catch (e) {
-    if (e.message === errorMessage.MANGA_DUPE)
-      return res.status(404).send(errorCode.MANGA_DUPE);
-
-    console.log("error", e);
     res.send(e);
   }
 };

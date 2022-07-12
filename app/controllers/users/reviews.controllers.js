@@ -20,7 +20,7 @@ export const addReview = async (req, res) => {
     res.send(entryReviewsList);
   } catch (e) {
     console.log(e);
-    res.status(500).send(e);
+    res.status(400).send(e);
   }
 };
 

@@ -50,6 +50,11 @@ export const updateAvatar = async (req, res) => {
         secure_url: uploadResult.secure_url,
         public_id: uploadResult.public_id,
       };
+      req.user.avatar = {
+        secure_url: uploadResult.secure_url,
+        public_id: uploadResult.public_id,
+      };
+      req.user.save();
       const updatedProfileData = await profileData.save();
       await updatedProfileData.populate("favoriteCharacters favoritePeople");
       res.send(updatedProfileData);

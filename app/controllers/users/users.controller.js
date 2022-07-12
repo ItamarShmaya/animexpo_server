@@ -7,7 +7,7 @@ import { User } from "../../../db/models/user.js";
 import { errorCode, errorMessage } from "../../errors/error.js";
 import jwt from "jsonwebtoken";
 import { TOKEN_USER_SECRET } from "../../../config/env_var.js";
-import { Review } from "../../../db/models/reviews.js";
+import { FriendsList } from "../../../db/models/friendsList.js";
 
 export const createUser = async (req, res) => {
   const { username, password, email, birthday } = req.body;
@@ -34,11 +34,24 @@ export const createUser = async (req, res) => {
       profile: profileData._id,
     });
     await favPeopleList.save();
+    const friendsList = new FriendsList({
+      owner: createdUser._id,
+      profile: profileData._id,
+    });
+    await friendsList.save();
     const token = await createdUser.generateAuthToken();
     await createdUser.populate("animeList mangaList");
     await createdUser.populate({
       path: "profileData",
-      populate: { path: "favoriteCharacters favoritePeople" },
+      populate: {
+        path: "favoriteCharacters favoritePeople friendsList",
+        populate: {
+          path: "list",
+          options: {
+            limit: 10,
+          },
+        },
+      },
     });
     res.status(201).send({ user: createdUser, token });
   } catch (e) {
@@ -66,12 +79,21 @@ export const loginUser = async (req, res) => {
     await user.populate("animeList mangaList");
     await user.populate({
       path: "profileData",
-      populate: { path: "favoriteCharacters favoritePeople" },
+      populate: {
+        path: "favoriteCharacters favoritePeople friendsList",
+        populate: {
+          path: "list",
+          options: {
+            limit: 8,
+          },
+        },
+      },
     });
     res.send({ user, token });
   } catch (e) {
     if (e.message === errorMessage.INCORRECT_CREDENTIALS)
       res.status(400).send(errorCode.INCORRECT_CREDENTIALS);
+    console.log(e);
   }
 };
 
@@ -93,7 +115,15 @@ export const getUserProfileData = async (req, res) => {
     const user = await User.findOne({ username });
     if (!user) throw new Error(errorMessage.USER_NOT_FOUND);
     const profileData = await ProfileData.findOne({ owner: user._id });
-    await profileData.populate("favoriteCharacters favoritePeople");
+    await profileData.populate({
+      path: "favoriteCharacters favoritePeople friendsList",
+      populate: {
+        path: "list",
+        options: {
+          limit: 8,
+        },
+      },
+    });
     res.send(profileData);
   } catch (e) {
     res.status(404).send(errorCode.USER_NOT_FOUND);

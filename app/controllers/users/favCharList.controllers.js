@@ -7,7 +7,11 @@ export const addToFavCharList = async (req, res) => {
     const dupe = characterList.list.find(
       (char) => char.mal_id === req.body.mal_id
     );
-    if (dupe) throw new Error(errorMessage.CHAR_DUPE);
+
+    if (dupe) {
+      return res.send(characterList);
+    }
+
     characterList.list.push(req.body);
     const updatedCharacterList = await characterList.save();
     res.send(updatedCharacterList);

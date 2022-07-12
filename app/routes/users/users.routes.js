@@ -39,14 +39,69 @@ import {
   getEntryReviews,
   getUserReviews,
 } from "../../controllers/users/reviews.controllers.js";
+import {
+  acceptFriendRequest,
+  getUserFriendRequests,
+  getUserFriendsList,
+  isUserInFriendsList,
+  rejectFriendRequest,
+  removeFriend,
+  sendFriendRequest,
+  wasFriendRequestSent,
+} from "../../controllers/users/friendsList.controller.js";
+import {
+  getUserNotifications,
+  updateNotificationsToRead,
+} from "../../controllers/users/notifications.controller.js";
 
 export const userRouter = express.Router();
 
 userRouter.post("/users/register", createUser);
-
 userRouter.post("/user/login", loginUser);
 userRouter.post("/user/logout", authUser, logoutUser);
 userRouter.post("/user/authinticate", authUser, authenticateUser);
+
+userRouter.post(
+  "/user/:username/changeAvatar",
+  authUser,
+  cloudinaryConfig,
+  multerUpload,
+  updateAvatar
+);
+
+userRouter.post("/user/reviews", authUser, addReview);
+
+userRouter.post(
+  "/user/:username/sendFriendRequest",
+  authUser,
+  sendFriendRequest
+);
+userRouter.post(
+  "/user/:username/acceptFriendRequest",
+  authUser,
+  acceptFriendRequest
+);
+userRouter.post(
+  "/user/:username/rejectFriendRequest",
+  authUser,
+  rejectFriendRequest
+);
+userRouter.post(
+  "/user/:username/isUserInFriendsList",
+  authUser,
+  isUserInFriendsList
+);
+userRouter.post(
+  "/user/:username/wasFriendRequestSent",
+  authUser,
+  wasFriendRequestSent
+);
+userRouter.post("/user/:username/removeFriend", authUser, removeFriend);
+userRouter.post(
+  "/user/:username/notifications",
+  authUser,
+  updateNotificationsToRead
+);
 
 userRouter.patch("/user/:username/addToAnimelist", authUser, addToAnimeList);
 userRouter.patch(
@@ -100,20 +155,17 @@ userRouter.patch(
   updateProfileData
 );
 
-userRouter.post(
-  "/user/:username/changeAvatar",
-  authUser,
-  cloudinaryConfig,
-  multerUpload,
-  updateAvatar
-);
-
-userRouter.post("/user/reviews", authUser, addReview);
-
 userRouter.get("/users", getUsersBySearch);
 userRouter.get("/user/:username/animelist", getUserAnimeList);
 userRouter.get("/user/:username/mangalist", getUserMangaList);
 userRouter.get("/reviews/:mal_id", getEntryReviews);
 userRouter.get("/user/:username/reviews", getUserReviews);
+userRouter.get(
+  "/user/:username/friendRequests",
+  authUser,
+  getUserFriendRequests
+);
+userRouter.get("/user/:username/notifications", authUser, getUserNotifications);
+userRouter.get("/user/:username/friends", authUser, getUserFriendsList);
 
 userRouter.get("/profile/:username", getUserProfileData);

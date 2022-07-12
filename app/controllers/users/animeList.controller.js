@@ -22,15 +22,15 @@ export const addToAnimeList = async (req, res) => {
     const dupe = animeList.list.find(
       (anime) => anime.mal_id === req.body.mal_id
     );
-    if (dupe) throw new Error(errorMessage.ANIME_DUPE);
+
+    if (dupe) {
+      return res.send(animeList);
+    }
+
     animeList.list.push(req.body);
     const updatedAnimeList = await animeList.save();
     res.send(updatedAnimeList);
   } catch (e) {
-    if (e.message === errorMessage.ANIME_DUPE)
-      return res.status(404).send(errorCode.ANIME_DUPE);
-
-    console.log("error", e);
     res.send(e);
   }
 };

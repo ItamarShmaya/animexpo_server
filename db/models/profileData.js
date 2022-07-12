@@ -43,7 +43,7 @@ const profileDataSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: "User",
+    ref: "users",
   },
 });
 
@@ -56,6 +56,13 @@ profileDataSchema.virtual("favoriteCharacters", {
 
 profileDataSchema.virtual("favoritePeople", {
   ref: "favpeoplelists",
+  localField: "_id",
+  foreignField: "profile",
+  justOne: true,
+});
+
+profileDataSchema.virtual("friendsList", {
+  ref: "friendslists",
   localField: "_id",
   foreignField: "profile",
   justOne: true,

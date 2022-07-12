@@ -27,14 +27,14 @@ const favCharsSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     unique: true,
     required: true,
-    ref: "User",
+    ref: "users",
   },
 
   profile: {
     type: mongoose.Schema.Types.ObjectId,
     unique: true,
     required: true,
-    ref: "ProfileData",
+    ref: "profiledatas",
   },
 });
 

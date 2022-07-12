@@ -34,6 +34,21 @@ const userSchema = new mongoose.Schema(
       },
     },
 
+    avatar: {
+      secure_url: {
+        type: String,
+        trim: true,
+        default:
+          "https://res.cloudinary.com/dhzbwclpj/image/upload/v1657265186/avatars/defualtAvatar_lmkkak.png",
+      },
+
+      public_id: {
+        type: String,
+        trim: true,
+        default: "defualtAvatar_lmkkak",
+      },
+    },
+
     tokens: [
       {
         token: {

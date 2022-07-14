@@ -24,11 +24,6 @@ const io = new Server(server, {
   },
 });
 
-app.listen(PORT, (err) => {
-  if (err) return console.log(err);
-  console.log(`Server is up at port ${PORT}`);
-});
-
 io.on("connection", async (socket) => {
   socket.on("new_user", async ({ username }) => {
     try {
@@ -127,6 +122,11 @@ io.on("connection", async (socket) => {
   });
 });
 
-// server.listen(3001, () => {
-//   console.log(`Socket Server is up at port ${3001}`);
+// app.listen(PORT, (err) => {
+//   if (err) return console.log(err);
+//   console.log(`Server is up at port ${PORT}`);
 // });
+
+server.listen(PORT, () => {
+  console.log(`Socket Server is up at port ${PORT}`);
+});

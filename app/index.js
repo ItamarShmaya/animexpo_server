@@ -20,7 +20,7 @@ app.use("/", userRouter);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "https://animexpo-client.herokuapp.com/",
+    origin: "https://animexpo-client.herokuapp.com",
   },
 });
 

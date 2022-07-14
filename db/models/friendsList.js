@@ -5,7 +5,6 @@ const friendsListSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      unique: true,
       ref: "users",
     },
   ],

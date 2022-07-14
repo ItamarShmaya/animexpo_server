@@ -66,8 +66,7 @@ export const createUser = async (req, res) => {
     if (e.errors?.email?.message.toLowerCase() === errorMessage.INVALID_EMAIL) {
       return res.status(400).send(errorCode.INVALID_EMAIL);
     }
-    console.log(e);
-    res.send("createUser, new error need to handle");
+    res.send(e);
   }
 };
 

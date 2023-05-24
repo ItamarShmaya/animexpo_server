@@ -12,7 +12,11 @@ import { FriendsList } from "../../../db/models/friendsList.js";
 export const createUser = async (req, res) => {
   const { username, password, email, birthday } = req.body;
   try {
-    const user = new User({ username, password, email });
+    const user = new User({
+      username: username.toLowerCase(),
+      password,
+      email,
+    });
     const createdUser = await user.save();
     const animeList = new AnimeList({ owner: createdUser._id });
     await animeList.save();
@@ -20,6 +24,7 @@ export const createUser = async (req, res) => {
     await mangaList.save();
     const profileData = new ProfileData({
       owner: createdUser._id,
+      "personalInfo.displayName": username,
       "personalInfo.joined": createdUser.createdAt,
       "personalInfo.birthday": birthday,
     });
@@ -74,7 +79,7 @@ export const createUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   const { username, password } = req.body;
   try {
-    const user = await User.findByCredentials(username, password);
+    const user = await User.findByCredentials(username.toLowerCase(), password);
     const token = await user.generateAuthToken();
     await user.populate("animeList mangaList");
     await user.populate({

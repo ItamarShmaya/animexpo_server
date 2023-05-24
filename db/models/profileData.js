@@ -2,6 +2,13 @@ import mongoose from "mongoose";
 
 const profileDataSchema = new mongoose.Schema({
   personalInfo: {
+    displayName: {
+      type: String,
+      required: true,
+      trim: true,
+      minLength: 3,
+    },
+
     gender: {
       type: String,
       trim: true,

@@ -18,16 +18,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/", userRouter);
 
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "https://animexpoclient.onrender.com",
-  },
-});
 // const io = new Server(server, {
 //   cors: {
-//     origin: "http://localhost:3000",
+//     origin: "https://animexpoclient.onrender.com",
 //   },
 // });
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
 
 io.on("connection", async (socket) => {
   socket.on("new_user", async ({ username }) => {

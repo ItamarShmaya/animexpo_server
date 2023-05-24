@@ -31,7 +31,7 @@ export const addToAnimeList = async (req, res) => {
     const updatedAnimeList = await animeList.save();
     res.send(updatedAnimeList);
   } catch (e) {
-    res.send(e);
+    console.log(e);
   }
 };
 

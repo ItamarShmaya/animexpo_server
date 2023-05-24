@@ -23,6 +23,11 @@ const io = new Server(server, {
     origin: "https://animexpoclient.onrender.com",
   },
 });
+// const io = new Server(server, {
+//   cors: {
+//     origin: "http://localhost:3000",
+//   },
+// });
 
 io.on("connection", async (socket) => {
   socket.on("new_user", async ({ username }) => {

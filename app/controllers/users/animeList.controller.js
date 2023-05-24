@@ -52,10 +52,10 @@ export const removeFromAnimeList = async (req, res) => {
 export const updateAnimeEntry = async (req, res) => {
   try {
     const animeList = await AnimeList.findOne({ owner: req.user._id });
-    const animeEntry = animeList.list.id(req.body._id);
-    animeEntry.set(req.body);
+    const updatedAnimeEntry = animeList.list.id(req.body._id).set(req.body);
     const updatedList = await animeList.save();
-    res.send(updatedList);
+    // res.send({ updatedList, updatedAnimeEntry });
+    res.send(updatedAnimeEntry);
   } catch (e) {
     console.log(e);
   }

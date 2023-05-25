@@ -158,3 +158,13 @@ export const getUsersBySearch = async (req, res) => {
     console.log(e);
   }
 };
+
+export const deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    const deletedUser = await user.deleteOne();
+    res.send({ delete: "success", code: 200 });
+  } catch (e) {
+    console.log(e);
+  }
+};

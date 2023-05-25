@@ -11,6 +11,7 @@ import {
 //     if (!process.env.NODE_ENV) {
 //       const { host, port, name } = mongoDBInstance;
 //       console.log({ host, port, name });
+//       // mongoose.connection.db.dropDatabase();
 //     }
 //   },
 //   {

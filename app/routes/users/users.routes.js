@@ -6,6 +6,7 @@ import {
   loginUser,
   logoutUser,
   getUsersBySearch,
+  deleteUser,
 } from "../../controllers/users/users.controller.js";
 import {
   addToMangaList,
@@ -169,3 +170,5 @@ userRouter.get("/user/:username/notifications", authUser, getUserNotifications);
 userRouter.get("/user/:username/friends", authUser, getUserFriendsList);
 
 userRouter.get("/profile/:username", getUserProfileData);
+
+userRouter.delete("/user/:username/deleteUser", authUser, deleteUser);

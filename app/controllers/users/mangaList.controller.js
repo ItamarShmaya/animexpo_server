@@ -52,10 +52,9 @@ export const removeFromMangaList = async (req, res) => {
 export const updateMangaEntry = async (req, res) => {
   try {
     const mangaList = await MangaList.findOne({ owner: req.user._id });
-    const mangaEntry = mangaList.list.id(req.body._id);
-    mangaEntry.set(req.body);
+    const updatedMangaEntry = mangaList.list.id(req.body._id).set(req.body);
     const updatedMangaList = await mangaList.save();
-    res.send(updatedMangaList);
+    res.send(updatedMangaEntry);
   } catch (e) {
     console.log(e);
   }

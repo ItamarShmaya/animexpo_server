@@ -8,6 +8,10 @@ import { errorCode, errorMessage } from "../../errors/error.js";
 import jwt from "jsonwebtoken";
 import { TOKEN_USER_SECRET } from "../../../config/env_var.js";
 import { FriendsList } from "../../../db/models/friendsList.js";
+import {
+  defualtAvatarPublicId,
+  deleteImage,
+} from "../../../config/cloudinaryConfig.js";
 
 export const createUser = async (req, res) => {
   const { username, password, email, birthday } = req.body;
@@ -163,6 +167,11 @@ export const deleteUser = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     const deletedUser = await user.deleteOne();
+    const imageToDelete = deletedUser.avatar.public_id;
+    if (imageToDelete !== defualtAvatarPublicId) {
+      const deleteResponse = await deleteImage(imageToDelete);
+      if (deleteResponse.error) throw new Error();
+    }
     res.send({ delete: "success", code: 200 });
   } catch (e) {
     console.log(e);

@@ -171,4 +171,9 @@ userRouter.get("/user/:username/friends", authUser, getUserFriendsList);
 
 userRouter.get("/profile/:username", getUserProfileData);
 
-userRouter.delete("/user/:username/deleteUser", authUser, deleteUser);
+userRouter.delete(
+  "/user/:username/deleteUser",
+  authUser,
+  cloudinaryConfig,
+  deleteUser
+);

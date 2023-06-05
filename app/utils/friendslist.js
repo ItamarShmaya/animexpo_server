@@ -7,7 +7,7 @@ export const getUpdatedFriendsList = async (username) => {
     const friendsList = await FriendsList.findOne({ owner: user._id }).populate(
       {
         path: "list",
-        options: { limit: 8, sort: { createdAt: "desc" } },
+        options: { sort: { createdAt: "desc" } },
       }
     );
     return friendsList;

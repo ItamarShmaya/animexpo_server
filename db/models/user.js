@@ -9,7 +9,6 @@ import { MangaList } from "./mangaList.js";
 import { FavCharsList } from "./favoriteCharacters.js";
 import { FavPeopleList } from "./favoritePeople.js";
 import { FriendsList } from "./friendsList.js";
-import { OnlineUser } from "./onlineUsers.js";
 import { Review } from "./reviews.js";
 import { ProfileData } from "./profileData.js";
 import { Notification } from "./notifications.js";
@@ -144,7 +143,6 @@ userSchema.pre(
       { list: userIdString },
       { $pull: { list: userIdString } }
     );
-    await OnlineUser.deleteOne({ username: user.username });
     await ProfileData.deleteOne({ owner: userId });
     await Review.deleteMany({ author: userId });
     await Notification.deleteMany().or([

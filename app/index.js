@@ -5,8 +5,10 @@ import { Server } from "socket.io";
 import "../db/index.js";
 import { userRouter } from "./routes/users/users.routes.js";
 import { getUserNotifications } from "./utils/notifications.js";
-import { addUser, getUser, removeUser } from "./utils/users.js";
 import { getUpdatedFriendsList } from "./utils/friendslist.js";
+import uniqid from "uniqid";
+import InMemorySessionStore from "./utils/sessionStore.js";
+
 const app = express();
 
 const PORT = process.env.PORT || 5050;
@@ -29,108 +31,98 @@ const io = new Server(server, {
 //   },
 // });
 
-io.on("connection", async (socket) => {
-  socket.on("new_user", async ({ username }) => {
-    try {
-      await addUser(username, socket.id);
-    } catch (e) {
-      console.log(e);
-    }
-  });
+let setTimeoutId;
 
-  socket.on("username_to_notify", async ({ recipient }) => {
-    try {
-      const users = await getUser(recipient);
-      const notifs = await getUserNotifications(recipient);
-      users.forEach((user) => {
-        io.to(user.socketId).emit("recieve_notifs", { notifs });
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  });
+const sessionStore = new InMemorySessionStore();
 
-  socket.on("accepter_client_lists_updates", async ({ accepter }) => {
-    try {
-      const acceptertUsers = await getUser(accepter);
-      const friendsList = await getUpdatedFriendsList(accepter);
-      acceptertUsers.forEach((user) => {
-        io.to(user.socketId).emit("updated_accepter_friendslist", {
-          friendsList,
-        });
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  });
+io.use(async (socket, next) => {
+  const sessionID = socket.handshake.auth.sessionID;
+  const username = socket.handshake.auth.username;
 
-  socket.on("reciever_client_lists_updates", async ({ accepter, reciever }) => {
-    try {
-      const recievertUsers = await getUser(reciever);
-      const accepterFriendsList = await getUpdatedFriendsList(accepter);
-      const recieverFriendsList = await getUpdatedFriendsList(reciever);
-      recievertUsers.forEach((user) => {
-        io.to(user.socketId).emit("updated_reciever_friendslist", {
-          accepterFriendsList,
-          recieverFriendsList,
-        });
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  });
+  if (sessionID) {
+    socket.sessionID = sessionID;
+    socket.username = username;
+    return next();
+  }
 
-  socket.on("remover_client_lists_updates", async ({ remover, removed }) => {
-    try {
-      const removertUsers = await getUser(remover);
-      const removedFriendsList = await getUpdatedFriendsList(removed);
-      const removerFriendsList = await getUpdatedFriendsList(remover);
-      removertUsers.forEach((user) => {
-        io.to(user.socketId).emit("updated_remover_friendslist", {
-          removedFriendsList,
-          removerFriendsList,
-        });
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  });
-
-  socket.on("removed_client_lists_updates", async ({ removed }) => {
-    try {
-      const removedtUsers = await getUser(removed);
-      const friendsList = await getUpdatedFriendsList(removed);
-      removedtUsers.forEach((user) => {
-        io.to(user.socketId).emit("updated_removed_friendslist", {
-          friendsList,
-        });
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  });
-
-  socket.on("logout", async ({ socketId }) => {
-    try {
-      await removeUser(socketId);
-    } catch (e) {
-      console.log(e);
-    }
-  });
-  socket.on("disconnect", async () => {
-    console.log("why ", new Date());
-    try {
-      await removeUser(socket.id);
-    } catch (e) {
-      console.log(e);
-    }
-  });
+  socket.sessionID = uniqid();
+  socket.username = username;
+  next();
 });
 
-// app.listen(PORT, (err) => {
-//   if (err) return console.log(err);
-//   console.log(`Server is up at port ${PORT}`);
-// });
+io.on("connection", async (socket) => {
+  clearTimeout(setTimeoutId);
+
+  sessionStore.saveSession(socket.sessionID, {
+    socketID: socket.id,
+    username: socket.username,
+    online: true,
+  });
+
+  console.log("all sessions", sessionStore.findAllSessions());
+  socket.emit("session", { sessionID: socket.sessionID });
+
+  socket.on("online_users", async () => {
+    const users = sessionStore.findAllSessions();
+    console.log("online_users");
+    socket.emit("online_users", { users });
+  });
+
+  socket.on("friend_req", async ({ to }) => {
+    try {
+      const notifications = await getUserNotifications(to.username);
+      io.to(to.socketID).emit("new_notifications", { notifications });
+    } catch (e) {
+      console.log(e);
+    }
+  });
+
+  socket.on("accept_friend_req", async ({ from }) => {
+    try {
+      const notifications = await getUserNotifications(from.username);
+      io.to(from.socketID).emit("new_notifications", { notifications });
+      const friendsList = await getUpdatedFriendsList(from.username);
+      io.to(from.socketID).emit("updated_friendslist", { friendsList });
+    } catch (e) {
+      console.log(e);
+    }
+  });
+
+  socket.on("reject_friend_req", async ({ from }) => {
+    try {
+      const notifications = await getUserNotifications(from.username);
+      io.to(from.socketID).emit("new_notifications", { notifications });
+    } catch (e) {
+      console.log(e);
+    }
+  });
+
+  socket.on("remove_friend", async ({ to }) => {
+    try {
+      const notifications = await getUserNotifications(to.username);
+      io.to(to.socketID).emit("new_notifications", { notifications });
+      const friendsList = await getUpdatedFriendsList(to.username);
+      io.to(to.socketID).emit("updated_friendslist", { friendsList });
+    } catch (e) {
+      console.log(e);
+    }
+  });
+
+  socket.on("logout", async () => {
+    try {
+      sessionStore.deleteSession(socket.sessionID);
+    } catch (e) {
+      console.log(e);
+    }
+  });
+
+  socket.on("disconnect", async (reason) => {
+    console.log("Socket disconnected because of " + reason);
+    // setTimeoutId = setTimeout(async () => {
+    //   sessionStore.deleteSession(socket.sessionID);
+    // }, 60000);
+  });
+});
 
 server.listen(PORT, () => {
   console.log(`Socket Server is up at port ${PORT}`);

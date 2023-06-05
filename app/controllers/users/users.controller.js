@@ -57,7 +57,7 @@ export const createUser = async (req, res) => {
         populate: {
           path: "list",
           options: {
-            limit: 10,
+            sort: { createdAt: "desc" },
           },
         },
       },
@@ -93,7 +93,7 @@ export const loginUser = async (req, res) => {
         populate: {
           path: "list",
           options: {
-            limit: 8,
+            sort: { createdAt: "desc" },
           },
         },
       },
@@ -129,7 +129,7 @@ export const getUserProfileData = async (req, res) => {
       populate: {
         path: "list",
         options: {
-          limit: 8,
+          sort: { createdAt: "desc" },
         },
       },
     });

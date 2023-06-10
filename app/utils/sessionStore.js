@@ -4,27 +4,59 @@ class SessionStore {
   findAllSessions() {}
 }
 
-class InMemorySessionStore extends SessionStore {
-  constructor() {
-    super();
-    this.sessions = new Map();
-  }
+const SESSION_TTL = 60 * 60 * 24;
+const mapSession = ([username, socketID]) => {
+  return { username, socketID };
+};
 
-  findSession(id) {
-    return this.sessions.get(id);
+export class RedisSessionStore extends SessionStore {
+  constructor(redisClient) {
+    super();
+    this.redisClient = redisClient;
   }
 
   saveSession(id, session) {
-    this.sessions.set(id, session);
+    this.redisClient
+      .multi()
+      .hmset(`session:${id}`, session)
+      .expire(`session:${id}`, SESSION_TTL)
+      .exec();
   }
 
-  findAllSessions() {
-    return [...this.sessions.values()];
+  findSession(id) {
+    return this.redisClient
+      .hmget(`session:${id}`, "username", "socketID")
+      .then(mapSession);
+  }
+
+  async findAllSessions() {
+    const allSessionsKeys = [];
+    let nextCursor = 0;
+    do {
+      const [cursor, keys] = await this.redisClient.scan(
+        nextCursor,
+        "MATCH",
+        "session:*",
+        "COUNT",
+        "100"
+      );
+
+      nextCursor = parseInt(cursor, 10);
+      keys.forEach((key) => allSessionsKeys.push(key));
+    } while (nextCursor !== 0);
+
+    const allSessions = allSessionsKeys.map((sessionKey) => {
+      return this.redisClient
+        .hmget(sessionKey, "username", "socketID")
+        .then(mapSession);
+    });
+
+    return Promise.all(allSessions);
   }
 
   deleteSession(id) {
-    return this.sessions.delete(id);
+    return this.redisClient.hdel(`session:${id}`, "username", "socketID");
   }
 }
 
-export default InMemorySessionStore;
+export default RedisSessionStore;

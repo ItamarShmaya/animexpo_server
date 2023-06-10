@@ -7,7 +7,11 @@ import { userRouter } from "./routes/users/users.routes.js";
 import { getUserNotifications } from "./utils/notifications.js";
 import { getUpdatedFriendsList } from "./utils/friendslist.js";
 import uniqid from "uniqid";
-import InMemorySessionStore from "./utils/sessionStore.js";
+import RedisSessionStore from "./utils/sessionStore.js";
+import Redis from "ioredis";
+import { REDIS_URL } from "../config/env_var.js";
+
+const redisClient = new Redis(REDIS_URL);
 
 const app = express();
 
@@ -31,14 +35,12 @@ const io = new Server(server, {
 //   },
 // });
 
-let setTimeoutId;
-
-const sessionStore = new InMemorySessionStore();
+const sessionStore = new RedisSessionStore(redisClient);
 
 io.use(async (socket, next) => {
   const sessionID = socket.handshake.auth.sessionID;
   const username = socket.handshake.auth.username;
-
+  console.log(sessionID, username);
   if (sessionID) {
     socket.sessionID = sessionID;
     socket.username = username;
@@ -51,27 +53,25 @@ io.use(async (socket, next) => {
 });
 
 io.on("connection", async (socket) => {
-  clearTimeout(setTimeoutId);
-
   sessionStore.saveSession(socket.sessionID, {
     socketID: socket.id,
     username: socket.username,
-    online: true,
   });
 
-  console.log("all sessions", sessionStore.findAllSessions());
   socket.emit("session", { sessionID: socket.sessionID });
 
   socket.on("online_users", async () => {
-    const users = sessionStore.findAllSessions();
-    console.log("online_users");
+    const users = await sessionStore.findAllSessions();
+    console.log(users);
     socket.emit("online_users", { users });
   });
 
   socket.on("friend_req", async ({ to }) => {
     try {
-      const notifications = await getUserNotifications(to.username);
-      io.to(to.socketID).emit("new_notifications", { notifications });
+      const notifications = await getUserNotifications(to[0].username);
+      for (let user of to) {
+        io.to(user.socketID).emit("new_notifications", { notifications });
+      }
     } catch (e) {
       console.log(e);
     }
@@ -79,10 +79,12 @@ io.on("connection", async (socket) => {
 
   socket.on("accept_friend_req", async ({ from }) => {
     try {
-      const notifications = await getUserNotifications(from.username);
-      io.to(from.socketID).emit("new_notifications", { notifications });
-      const friendsList = await getUpdatedFriendsList(from.username);
-      io.to(from.socketID).emit("updated_friendslist", { friendsList });
+      const notifications = await getUserNotifications(from[0].username);
+      const friendsList = await getUpdatedFriendsList(from[0].username);
+      for (let user of from) {
+        io.to(user.socketID).emit("new_notifications", { notifications });
+        io.to(user.socketID).emit("updated_friendslist", { friendsList });
+      }
     } catch (e) {
       console.log(e);
     }
@@ -90,8 +92,10 @@ io.on("connection", async (socket) => {
 
   socket.on("reject_friend_req", async ({ from }) => {
     try {
-      const notifications = await getUserNotifications(from.username);
-      io.to(from.socketID).emit("new_notifications", { notifications });
+      const notifications = await getUserNotifications(from[0].username);
+      for (let user of from) {
+        io.to(user.socketID).emit("new_notifications", { notifications });
+      }
     } catch (e) {
       console.log(e);
     }
@@ -99,28 +103,24 @@ io.on("connection", async (socket) => {
 
   socket.on("remove_friend", async ({ to }) => {
     try {
-      const notifications = await getUserNotifications(to.username);
-      io.to(to.socketID).emit("new_notifications", { notifications });
-      const friendsList = await getUpdatedFriendsList(to.username);
-      io.to(to.socketID).emit("updated_friendslist", { friendsList });
+      const notifications = await getUserNotifications(to[0].username);
+      const friendsList = await getUpdatedFriendsList(to[0].username);
+      for (let user of to) {
+        io.to(user.socketID).emit("new_notifications", { notifications });
+        io.to(user.socketID).emit("updated_friendslist", { friendsList });
+      }
     } catch (e) {
       console.log(e);
     }
   });
 
   socket.on("logout", async () => {
-    try {
-      sessionStore.deleteSession(socket.sessionID);
-    } catch (e) {
-      console.log(e);
-    }
+    sessionStore.deleteSession(socket.sessionID);
   });
 
   socket.on("disconnect", async (reason) => {
     console.log("Socket disconnected because of " + reason);
-    // setTimeoutId = setTimeout(async () => {
-    //   sessionStore.deleteSession(socket.sessionID);
-    // }, 60000);
+    sessionStore.deleteSession(socket.sessionID);
   });
 });
 

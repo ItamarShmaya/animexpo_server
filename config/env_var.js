@@ -15,4 +15,5 @@ export const {
   CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET,
+  REDIS_URL,
 } = process.env;

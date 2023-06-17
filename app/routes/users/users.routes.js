@@ -159,7 +159,7 @@ userRouter.patch(
 userRouter.get("/users", getUsersBySearch);
 userRouter.get("/user/:username/animelist", getUserAnimeList);
 userRouter.get("/user/:username/mangalist", getUserMangaList);
-userRouter.get("/reviews/:mal_id", getEntryReviews);
+userRouter.get("/reviews/:id", getEntryReviews);
 userRouter.get("/user/:username/reviews", getUserReviews);
 userRouter.get(
   "/user/:username/friendRequests",

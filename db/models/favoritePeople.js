@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const personEntrySchema = new mongoose.Schema({
-  mal_id: {
+  id: {
     type: Number,
     required: true,
     trim: true,

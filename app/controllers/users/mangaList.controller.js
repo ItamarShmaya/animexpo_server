@@ -20,7 +20,7 @@ export const addToMangaList = async (req, res) => {
   try {
     const mangalist = await MangaList.findOne({ owner: req.user._id });
     const dupe = mangalist.list.find(
-      (manga) => manga.mal_id === req.body.mal_id
+      (manga) => manga.id === req.body.id
     );
 
     if (dupe) {
@@ -36,11 +36,11 @@ export const addToMangaList = async (req, res) => {
 };
 
 export const removeFromMangaList = async (req, res) => {
-  const { mal_id } = req.body;
+  const { id } = req.body;
   try {
     const mangaList = await MangaList.findOneAndUpdate(
       { owner: req.user._id },
-      { $pull: { list: { mal_id } } },
+      { $pull: { list: { id } } },
       { new: true }
     );
     res.send(mangaList);

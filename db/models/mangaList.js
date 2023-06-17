@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const mangaEntrySchema = new mongoose.Schema({
-  mal_id: {
+  id: {
     type: Number,
     required: true,
     trim: true,
@@ -19,7 +19,7 @@ const mangaEntrySchema = new mongoose.Schema({
     trim: true,
   },
 
-  type: {
+  format: {
     type: String,
     required: true,
     trim: true,

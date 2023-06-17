@@ -5,7 +5,7 @@ export const addToFavCharList = async (req, res) => {
   try {
     const characterList = await FavCharsList.findOne({ owner: req.user._id });
     const dupe = characterList.list.find(
-      (char) => char.mal_id === req.body.mal_id
+      (char) => char.id === req.body.id
     );
 
     if (dupe) {
@@ -25,11 +25,11 @@ export const addToFavCharList = async (req, res) => {
 };
 
 export const removeFromFavCharList = async (req, res) => {
-  const { mal_id } = req.body;
+  const { id } = req.body;
   try {
     const characterList = await FavCharsList.findOneAndUpdate(
       { owner: req.user._id },
-      { $pull: { list: { mal_id } } },
+      { $pull: { list: { id } } },
       { new: true }
     );
     res.send(characterList);

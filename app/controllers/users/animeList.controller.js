@@ -20,7 +20,7 @@ export const addToAnimeList = async (req, res) => {
   try {
     const animeList = await AnimeList.findOne({ owner: req.user._id });
     const dupe = animeList.list.find(
-      (anime) => anime.mal_id === req.body.mal_id
+      (anime) => anime.id === req.body.id
     );
 
     if (dupe) {
@@ -36,11 +36,11 @@ export const addToAnimeList = async (req, res) => {
 };
 
 export const removeFromAnimeList = async (req, res) => {
-  const { mal_id } = req.body;
+  const { id } = req.body;
   try {
     const animeList = await AnimeList.findOneAndUpdate(
       { owner: req.user._id },
-      { $pull: { list: { mal_id } } },
+      { $pull: { list: { id } } },
       { new: true }
     );
     res.send(animeList);

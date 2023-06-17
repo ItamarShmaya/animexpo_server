@@ -19,7 +19,7 @@ import {
 //     autoIndex: true,
 //   }
 // );
-const URI = `mongodb+srv://${MONGO_ATLAS_USERNAME}:${MONGO_ATLAS_PASSWORD}@animexpocluster.u0swr.mongodb.net/AnimeExpo?retryWrites=true&w=majority`;
+const URI = `mongodb+srv://${MONGO_ATLAS_USERNAME}:${MONGO_ATLAS_PASSWORD}@animexpocluster.gd4on7e.mongodb.net/AnimeExpo?retryWrites=true&w=majority`;
 
 mongoose.connect(URI, (error, mongoDBInstance) => {
   if (error) throw new Error("Mongo Connection Error: " + error);

@@ -7,7 +7,7 @@ export const addReview = async (req, res) => {
     const newReview = new Review(req.body);
     await newReview.save();
     const entryReviewsList = await Review.find({
-      mal_id: req.body.mal_id,
+      id: req.body.id,
     })
       .sort({ createdAt: "desc" })
       .populate({
@@ -26,9 +26,9 @@ export const addReview = async (req, res) => {
 
 export const getEntryReviews = async (req, res) => {
   const { limit } = req.query;
-  const { mal_id } = req.params;
+  const { id } = req.params;
   try {
-    const reviewsList = await Review.find({ mal_id })
+    const reviewsList = await Review.find({ id })
       .sort({ createdAt: "desc" })
       .populate({
         path: "author",

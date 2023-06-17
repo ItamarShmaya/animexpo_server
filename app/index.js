@@ -68,9 +68,11 @@ io.on("connection", async (socket) => {
 
   socket.on("friend_req", async ({ to }) => {
     try {
-      const notifications = await getUserNotifications(to[0].username);
-      for (let user of to) {
-        io.to(user.socketID).emit("new_notifications", { notifications });
+      if (to.length > 0) {
+        const notifications = await getUserNotifications(to[0].username);
+        for (let user of to) {
+          io.to(user.socketID).emit("new_notifications", { notifications });
+        }
       }
     } catch (e) {
       console.log(e);
@@ -79,11 +81,13 @@ io.on("connection", async (socket) => {
 
   socket.on("accept_friend_req", async ({ from }) => {
     try {
-      const notifications = await getUserNotifications(from[0].username);
-      const friendsList = await getUpdatedFriendsList(from[0].username);
-      for (let user of from) {
-        io.to(user.socketID).emit("new_notifications", { notifications });
-        io.to(user.socketID).emit("updated_friendslist", { friendsList });
+      if (from.length > 0) {
+        const notifications = await getUserNotifications(from[0].username);
+        const friendsList = await getUpdatedFriendsList(from[0].username);
+        for (let user of from) {
+          io.to(user.socketID).emit("new_notifications", { notifications });
+          io.to(user.socketID).emit("updated_friendslist", { friendsList });
+        }
       }
     } catch (e) {
       console.log(e);
@@ -92,9 +96,11 @@ io.on("connection", async (socket) => {
 
   socket.on("reject_friend_req", async ({ from }) => {
     try {
-      const notifications = await getUserNotifications(from[0].username);
-      for (let user of from) {
-        io.to(user.socketID).emit("new_notifications", { notifications });
+      if (from.length > 0) {
+        const notifications = await getUserNotifications(from[0].username);
+        for (let user of from) {
+          io.to(user.socketID).emit("new_notifications", { notifications });
+        }
       }
     } catch (e) {
       console.log(e);
@@ -103,11 +109,13 @@ io.on("connection", async (socket) => {
 
   socket.on("remove_friend", async ({ to }) => {
     try {
-      const notifications = await getUserNotifications(to[0].username);
-      const friendsList = await getUpdatedFriendsList(to[0].username);
-      for (let user of to) {
-        io.to(user.socketID).emit("new_notifications", { notifications });
-        io.to(user.socketID).emit("updated_friendslist", { friendsList });
+      if (to.length > 0) {
+        const notifications = await getUserNotifications(to[0].username);
+        const friendsList = await getUpdatedFriendsList(to[0].username);
+        for (let user of to) {
+          io.to(user.socketID).emit("new_notifications", { notifications });
+          io.to(user.socketID).emit("updated_friendslist", { friendsList });
+        }
       }
     } catch (e) {
       console.log(e);

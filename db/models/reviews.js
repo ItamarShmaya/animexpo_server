@@ -3,7 +3,7 @@ import { ProfileData } from "./profileData.js";
 
 const reviewSchema = new mongoose.Schema(
   {
-    mal_id: {
+    id: {
       type: String,
       required: true,
       trim: true,

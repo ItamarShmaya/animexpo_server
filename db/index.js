@@ -4,7 +4,7 @@ import {
   MONGO_ATLAS_PASSWORD,
 } from "../config/env_var.js";
 
-if (!process.env.NODE_ENV) {
+if (process.env.NODE_ENV === "development") {
   mongoose.connect(
     "mongodb://127.0.0.1:27017/AnimExpo",
     (error, mongoDBInstance) => {

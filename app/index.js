@@ -25,11 +25,10 @@ app.use("/", userRouter);
 
 const server = http.createServer(app);
 
-const origin =
-  process.env.NODE_ENV === "production"
-    ? "https://animexpoclient.onrender.com"
-    : "http://localhost:3000";
-    
+const origin = !process.env.NODE_ENV
+  ? "http://localhost:3000"
+  : "https://animexpoclient.onrender.com";
+
 const io = new Server(server, {
   cors: {
     origin,

@@ -1,6 +1,6 @@
 import { AnimeList } from "../../../db/models/animeList.js";
 import { FavCharsList } from "../../../db/models/favoriteCharacters.js";
-import { FavPeopleList } from "../../../db/models/favoritePeople.js";
+import { FavStaffList } from "../../../db/models/favoriteStaff.js";
 import { MangaList } from "../../../db/models/mangaList.js";
 import { ProfileData } from "../../../db/models/profileData.js";
 import { User } from "../../../db/models/user.js";
@@ -38,11 +38,11 @@ export const createUser = async (req, res) => {
       profile: profileData._id,
     });
     await favCharsList.save();
-    const favPeopleList = new FavPeopleList({
+    const favStaffList = new FavStaffList({
       owner: createdUser._id,
       profile: profileData._id,
     });
-    await favPeopleList.save();
+    await favStaffList.save();
     const friendsList = new FriendsList({
       owner: createdUser._id,
       profile: profileData._id,
@@ -53,7 +53,7 @@ export const createUser = async (req, res) => {
     await createdUser.populate({
       path: "profileData",
       populate: {
-        path: "favoriteCharacters favoritePeople friendsList",
+        path: "favoriteCharacters favoriteStaff friendsList",
         populate: {
           path: "list",
           options: {
@@ -89,7 +89,7 @@ export const loginUser = async (req, res) => {
     await user.populate({
       path: "profileData",
       populate: {
-        path: "favoriteCharacters favoritePeople friendsList",
+        path: "favoriteCharacters favoriteStaff friendsList",
         populate: {
           path: "list",
           options: {
@@ -125,7 +125,7 @@ export const getUserProfileData = async (req, res) => {
     if (!user) throw new Error(errorMessage.USER_NOT_FOUND);
     const profileData = await ProfileData.findOne({ owner: user._id });
     await profileData.populate({
-      path: "favoriteCharacters favoritePeople friendsList",
+      path: "favoriteCharacters favoriteStaff friendsList",
       populate: {
         path: "list",
         options: {

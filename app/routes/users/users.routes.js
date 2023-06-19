@@ -26,9 +26,9 @@ import {
   removeFromFavCharList,
 } from "../../controllers/users/favCharList.controllers.js";
 import {
-  addToFavPeopleList,
-  removeFromFavPeopleList,
-} from "../../controllers/users/favPeopleList.controllers.js";
+  addToFavStaffList,
+  removeFromFavStaffList,
+} from "../../controllers/users/favStaffList.controllers.js";
 import {
   updateAvatar,
   updateProfileData,
@@ -140,14 +140,14 @@ userRouter.patch(
 );
 
 userRouter.patch(
-  "/user/:username/addToFavPeopleList",
+  "/user/:username/addToFavStaffList",
   authUser,
-  addToFavPeopleList
+  addToFavStaffList
 );
 userRouter.patch(
-  "/user/:username/removeFromFavPeopleList",
+  "/user/:username/removeFromFavStaffList",
   authUser,
-  removeFromFavPeopleList
+  removeFromFavStaffList
 );
 
 userRouter.patch(

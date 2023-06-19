@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const personEntrySchema = new mongoose.Schema({
+const staffEntrySchema = new mongoose.Schema({
   id: {
     type: Number,
     required: true,
@@ -20,8 +20,8 @@ const personEntrySchema = new mongoose.Schema({
   },
 });
 
-const favPeopleSchema = new mongoose.Schema({
-  list: [personEntrySchema],
+const favStaffSchema = new mongoose.Schema({
+  list: [staffEntrySchema],
 
   owner: {
     type: mongoose.Schema.Types.ObjectId,
@@ -37,4 +37,4 @@ const favPeopleSchema = new mongoose.Schema({
   },
 });
 
-export const FavPeopleList = mongoose.model("favpeoplelists", favPeopleSchema);
+export const FavStaffList = mongoose.model("favStafflists", favStaffSchema);

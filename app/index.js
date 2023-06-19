@@ -24,16 +24,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/", userRouter);
 
 const server = http.createServer(app);
+
+const origin =
+  process.env.NODE_ENV === "production"
+    ? "https://animexpoclient.onrender.com"
+    : "http://localhost:3000";
+    
 const io = new Server(server, {
   cors: {
-    origin: "https://animexpoclient.onrender.com",
+    origin,
   },
 });
-// const io = new Server(server, {
-//   cors: {
-//     origin: "http://localhost:3000",
-//   },
-// });
 
 const sessionStore = new RedisSessionStore(redisClient);
 

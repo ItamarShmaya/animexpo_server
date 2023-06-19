@@ -61,8 +61,8 @@ profileDataSchema.virtual("favoriteCharacters", {
   justOne: true,
 });
 
-profileDataSchema.virtual("favoritePeople", {
-  ref: "favpeoplelists",
+profileDataSchema.virtual("favoriteStaff", {
+  ref: "favStafflists",
   localField: "_id",
   foreignField: "profile",
   justOne: true,

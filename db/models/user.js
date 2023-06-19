@@ -7,7 +7,7 @@ import { TOKEN_USER_SECRET } from "../../config/env_var.js";
 import { AnimeList } from "./animeList.js";
 import { MangaList } from "./mangaList.js";
 import { FavCharsList } from "./favoriteCharacters.js";
-import { FavPeopleList } from "./favoritePeople.js";
+import { FavStaffList } from "./favoriteStaff.js";
 import { FriendsList } from "./friendsList.js";
 import { Review } from "./reviews.js";
 import { ProfileData } from "./profileData.js";
@@ -137,7 +137,7 @@ userSchema.pre(
     await AnimeList.deleteOne({ owner: userId });
     await MangaList.deleteOne({ owner: userId });
     await FavCharsList.deleteOne({ owner: userId });
-    await FavPeopleList.deleteOne({ owner: userId });
+    await FavStaffList.deleteOne({ owner: userId });
     await FriendsList.deleteOne({ owner: userId });
     await FriendsList.updateMany(
       { list: userIdString },

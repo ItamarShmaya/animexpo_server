@@ -54,6 +54,8 @@ import {
   getUserNotifications,
   updateNotificationsToRead,
 } from "../../controllers/users/notifications.controller.js";
+import { addToFavAnimeList, removeFromFavAnimeList } from "../../controllers/users/favAnimeList.controller.js";
+import { addToFavMangaList, removeFromFavMangaList } from "../../controllers/users/favoriteMangaList.controller.js";
 
 export const userRouter = express.Router();
 
@@ -129,6 +131,27 @@ userRouter.patch(
 );
 
 userRouter.patch(
+  "/user/:username/addToFavAnimeList",
+  authUser,
+  addToFavAnimeList
+);
+userRouter.patch(
+  "/user/:username/removeFromFavAnimeList",
+  authUser,
+  removeFromFavAnimeList
+);
+userRouter.patch(
+  "/user/:username/addToFavMangaList",
+  authUser,
+  addToFavMangaList
+);
+userRouter.patch(
+  "/user/:username/removeFromFavMangaList",
+  authUser,
+  removeFromFavMangaList
+);
+
+userRouter.patch(
   "/user/:username/addToFavCharList",
   authUser,
   addToFavCharList
@@ -138,7 +161,6 @@ userRouter.patch(
   authUser,
   removeFromFavCharList
 );
-
 userRouter.patch(
   "/user/:username/addToFavStaffList",
   authUser,

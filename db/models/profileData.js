@@ -54,6 +54,20 @@ const profileDataSchema = new mongoose.Schema({
   },
 });
 
+profileDataSchema.virtual("favoriteAnime", {
+  ref: "favanimelists",
+  localField: "_id",
+  foreignField: "profile",
+  justOne: true,
+});
+
+profileDataSchema.virtual("favoriteManga", {
+  ref: "favmangalists",
+  localField: "_id",
+  foreignField: "profile",
+  justOne: true,
+});
+
 profileDataSchema.virtual("favoriteCharacters", {
   ref: "favcharslists",
   localField: "_id",

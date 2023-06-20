@@ -151,7 +151,6 @@ export const removeFriend = async (req, res) => {
       path: "list",
       options: { limit: 8, sort: { createdAt: "desc" } },
     });
-    console.log("remove friends: ", new Date());
     if (loggedInUserFriendsList) res.send(loggedInUserFriendsList);
   } catch (e) {
     console.log(e);

@@ -27,7 +27,7 @@ const server = http.createServer(app);
 console.log(process.env.NODE_ENV === "production");
 const origin =
   process.env.NODE_ENV === "production"
-    ? "https://animexpoclient.onrender.com"
+    ? "https://animexpo.onrender.com"
     : "http://localhost:3000";
 
 const io = new Server(server, {

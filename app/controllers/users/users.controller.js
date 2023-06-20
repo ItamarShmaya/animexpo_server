@@ -12,6 +12,8 @@ import {
   defualtAvatarPublicId,
   deleteImage,
 } from "../../../config/cloudinaryConfig.js";
+import { FavAnimeList } from "../../../db/models/favoriteAnime.js";
+import { FavMangaList } from "../../../db/models/favoriteManga.js";
 
 export const createUser = async (req, res) => {
   const { username, password, email, birthday } = req.body;
@@ -33,6 +35,16 @@ export const createUser = async (req, res) => {
       "personalInfo.birthday": birthday,
     });
     await profileData.save();
+    const favAnimeList = new FavAnimeList({
+      owner: createdUser._id,
+      profile: profileData._id,
+    });
+    await favAnimeList.save();
+    const favMangaList = new FavMangaList({
+      owner: createdUser._id,
+      profile: profileData._id,
+    });
+    await favMangaList.save();
     const favCharsList = new FavCharsList({
       owner: createdUser._id,
       profile: profileData._id,
@@ -53,7 +65,7 @@ export const createUser = async (req, res) => {
     await createdUser.populate({
       path: "profileData",
       populate: {
-        path: "favoriteCharacters favoriteStaff friendsList",
+        path: "favoriteAnime favoriteManga favoriteCharacters favoriteStaff friendsList",
         populate: {
           path: "list",
           options: {
@@ -89,7 +101,7 @@ export const loginUser = async (req, res) => {
     await user.populate({
       path: "profileData",
       populate: {
-        path: "favoriteCharacters favoriteStaff friendsList",
+        path: "favoriteAnime favoriteManga favoriteCharacters favoriteStaff friendsList",
         populate: {
           path: "list",
           options: {

@@ -24,11 +24,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/", userRouter);
 
 const server = http.createServer(app);
-console.log(process.env.NODE_ENV);
+console.log(process.env.NODE_ENV === "production");
 const origin =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:3000"
-    : "https://animexpoclient.onrender.com";
+  process.env.NODE_ENV === "production"
+    ? "https://animexpoclient.onrender.com"
+    : "http://localhost:3000";
 
 const io = new Server(server, {
   cors: {

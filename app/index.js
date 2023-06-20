@@ -24,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/", userRouter);
 
 const server = http.createServer(app);
+console.log(process.env.NODE_ENV);
 const origin =
   process.env.NODE_ENV === "development"
     ? "http://localhost:3000"

@@ -137,7 +137,7 @@ export const getUserProfileData = async (req, res) => {
     if (!user) throw new Error(errorMessage.USER_NOT_FOUND);
     const profileData = await ProfileData.findOne({ owner: user._id });
     await profileData.populate({
-      path: "favoriteCharacters favoriteStaff friendsList",
+      path: "favoriteAnime favoriteManga favoriteCharacters favoriteStaff friendsList",
       populate: {
         path: "list",
         options: {

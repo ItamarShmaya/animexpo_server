@@ -21,13 +21,14 @@ export const sendFriendRequest = async (req, res) => {
 };
 
 export const acceptFriendRequest = async (req, res) => {
-  const { id } = req.body;
+  const { _id } = req.body;
   try {
     const friendRequest = await FriendsRequest.findOne({
-      requester: id,
+      requester: _id,
       recipient: req.user._id,
       status: 1,
     });
+    if (!friendRequest) throw new Error("Unable to find friend request");
     friendRequest.status = 2;
     await friendRequest.save();
 
@@ -47,13 +48,16 @@ export const acceptFriendRequest = async (req, res) => {
 };
 
 export const rejectFriendRequest = async (req, res) => {
-  const { id } = req.body;
+  const { _id } = req.body;
   try {
     const friendRequest = await FriendsRequest.findOne({
-      requester: id,
+      requester: _id,
       recipient: req.user._id,
       status: 1,
     });
+
+    if (!friendRequest) throw new Error("Unable to find friend request");
+    
     friendRequest.status = 3;
     await friendRequest.save();
 

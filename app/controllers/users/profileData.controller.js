@@ -56,7 +56,9 @@ export const updateAvatar = async (req, res) => {
       };
       req.user.save();
       const updatedProfileData = await profileData.save();
-      await updatedProfileData.populate("favoriteCharacters favoriteStaff");
+      await updatedProfileData.populate(
+        "favoriteAnime favoriteManga favoriteCharacters favoriteStaff friendsList"
+      );
       res.send(updatedProfileData);
     }
   } catch (e) {

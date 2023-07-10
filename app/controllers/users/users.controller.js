@@ -124,7 +124,7 @@ export const logoutUser = async (req, res) => {
       return token.token !== req.token;
     });
     await req.user.save();
-    res.send();
+    res.status(200).send();
   } catch (e) {
     res.status(500).send();
   }
@@ -168,7 +168,7 @@ export const getUsersBySearch = async (req, res) => {
   try {
     const users = await User.find({
       username: new RegExp(username, "i"),
-    }).populate("profileData");
+    });
     res.send(users);
   } catch (e) {
     console.log(e);
@@ -187,5 +187,6 @@ export const deleteUser = async (req, res) => {
     res.send({ delete: "success", code: 200 });
   } catch (e) {
     console.log(e);
+    res.status(500).send({ delete: "failed", code: 500 });
   }
 };

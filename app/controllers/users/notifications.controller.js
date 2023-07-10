@@ -23,8 +23,9 @@ export const updateNotificationsToRead = async (req, res) => {
       { read: true }
     );
 
-    res.send({ status: "success" });
+    res.status(200).send({ success: true });
   } catch (e) {
     console.log(e);
+    res.status(500).send({ success: false, error: e });
   }
 };

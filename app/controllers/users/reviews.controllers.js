@@ -12,8 +12,7 @@ export const addReview = async (req, res) => {
       .sort({ createdAt: "desc" })
       .populate({
         path: "author",
-        select: "username profileData",
-        populate: "profileData",
+        select: "username avatar",
       })
       .limit(5);
 
@@ -32,8 +31,7 @@ export const getEntryReviews = async (req, res) => {
       .sort({ createdAt: "desc" })
       .populate({
         path: "author",
-        select: "username profileData",
-        populate: "profileData",
+        select: "username avatar",
       })
       .limit(limit);
     if (!reviewsList) throw new Error();

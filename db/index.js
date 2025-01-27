@@ -22,7 +22,6 @@ if (process.env.NODE_ENV === "production") {
       // mongoose.connection.db.dropDatabase();
     },
     {
-      useCreateIndex: true,
       autoIndex: true,
     }
   );
